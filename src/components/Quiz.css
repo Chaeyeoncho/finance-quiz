@@ -39,7 +39,7 @@ html {
 
 .quiz-container {
   width: 360px;
-  height: 640px;
+  height: 570px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -49,7 +49,7 @@ html {
 .search-input {
   width: 100%;
   padding: 10px;
-  margin: 10px 0;
+  margin: 10px 0px 0px 0px;
   border: 1px solid #fdba12;
   border-radius: 4px;
   font-size: 14px;
@@ -78,23 +78,30 @@ html {
   border: 1px solid #6e6259;
 }
 
+.keyword-button.selected {
+  background-color: #fdba12;
+  color: white;
+}
+
 .keyword-button:hover {
   background-color: #d5d5d5;
 }
 
 .generate-quiz-button {
   background-color: #fdba12;
-  color: #6e6259;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 14px;
   padding: 10px 20px;
   border-radius: 50px;
   cursor: pointer;
   margin-top: 20px;
   width: 100%;
+  border: 0px;
 }
-.generate-quiz-button:hover {
-  background-color: #fdba12;
+
+.generate-quiz-button:disabled {
+  background-color: #d5d5d5;
+  cursor: not-allowed;
 }
 
 .left-align {

@@ -1,12 +1,16 @@
 import React from "react";
-import Quiz from "./components/financial"; // 경로를 수정하세요
-import "./components/Quiz.css"; // CSS 파일도 올바른 경로로 수정합니다
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Quiz from "../src/components/Quiz";
+import QuizDetail from "../src/components/QuizDetail";
 
 function App() {
   return (
-    <div className="App">
-      <Quiz />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Quiz />} />
+        <Route path="/detail" element={<QuizDetail />} />
+      </Routes>
+    </Router>
   );
 }
 
