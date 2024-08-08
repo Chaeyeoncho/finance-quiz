@@ -28,9 +28,13 @@ const keywords = [
 const Quiz = () => {
   return (
     <div className="quiz-container">
-      <h2>학습할 키워드를 </h2>
-      <h2>선택해주세요</h2>
-      <h3>원하는 키워드를 입력해주세요</h3>
+      <h2 className="left-align">학습할 키워드를</h2>
+      <h2 className="left-align"> 선택해주세요</h2>
+      <input
+        className="search-input"
+        type="text"
+        placeholder="원하는 키워드를 입력해주세요"
+      />
       <div className="keywords-container">
         {keywords.map((keyword, index) => (
           <div key={index} className="keyword-button">
