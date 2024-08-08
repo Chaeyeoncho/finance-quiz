@@ -112,6 +112,10 @@ const QuizDetail = () => {
     return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
   };
 
+  const handleCheckAnswer = () => {
+    navigate("/result");
+  };
+
   return (
     <Container>
       <div>
@@ -131,7 +135,9 @@ const QuizDetail = () => {
       </div>
       <Buttons>
         <Button className="hint-button">힌트 보기</Button>
-        <Button className="submit-button">정답 확인</Button>
+        <Button className="submit-button" onClick={handleCheckAnswer}>
+          정답 확인
+        </Button>
       </Buttons>
     </Container>
   );
