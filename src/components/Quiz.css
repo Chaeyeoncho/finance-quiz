@@ -12,8 +12,6 @@
   font-weight: 700;
 }
 
-/* 추가적인 font-weight 설정이 필요하다면 여기 추가 */
-
 body,
 html {
   margin: 0;
@@ -25,7 +23,7 @@ html {
 }
 
 .h2 {
-  font-size: 24px; /* 폰트 크기 증가 */
+  font-size: 24px;
   font-weight: 700;
   text-align: left;
   width: 100%;
@@ -34,14 +32,14 @@ html {
 }
 
 .h3 {
-  font-size: 16px; /* 폰트 크기 증가 */
+  font-size: 16px;
   width: 100%;
-  margin: 10px 0; /* 약간의 여백 추가 */
+  margin: 10px 0;
 }
 
 .quiz-container {
   width: 360px;
-  height: 740px;
+  height: 640px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -58,7 +56,7 @@ html {
   border-radius: 30px;
 }
 .search-input::placeholder {
-  color: #6e6259; /* placeholder 노란색 */
+  color: #6e6259;
   font-weight: 500;
 }
 
@@ -71,13 +69,13 @@ html {
 }
 
 .keyword-button {
-  padding: 10px; /* 패딩 증가 */
-  border-radius: 25px; /* 테두리 반경 증가 */
+  padding: 10px;
+  border-radius: 25px;
   text-align: center;
   cursor: pointer;
   transition: background-color 0.3s;
   font-size: 14px;
-  border: 1.2px solid #a9a9a9;
+  border: 1px solid #6e6259;
 }
 
 .keyword-button:hover {
