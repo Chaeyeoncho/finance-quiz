@@ -59,7 +59,7 @@ const ExplanationPage = () => {
   const navigate = useNavigate();
 
   const handleBackToQuiz = () => {
-    navigate("/result"); // 이전 페이지로 이동 (퀴즈 결과 페이지)
+    navigate("/result");
   };
 
   return (
