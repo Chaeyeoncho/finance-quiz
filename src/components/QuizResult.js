@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import partyPopperImage from "../assets/img/party_popper.jpg";
-import Splash from "./Splash"; // 스플래시 컴포넌트 import
+import Splash from "./Splash";
 
 const Container = styled.div`
   width: 360px;
@@ -83,24 +83,54 @@ const LastButton = styled(Button)`
 const QuizResult = () => {
   const navigate = useNavigate();
   const [showSplash, setShowSplash] = useState(false);
+  const [similarity, setSimilarity] = useState(null);
 
   const handleBackToQuiz = () => {
     navigate("/");
   };
 
-  const handleQuestionClick = (question) => {
+  const handleQuestionClick = async (question) => {
     if (question === "질문에 대한 해설") {
-      // 스플래시 화면을 보여주고 2초 후에 해설 페이지로 이동
       setShowSplash(true);
-      setTimeout(() => {
-        navigate("/explanation");
-      }, 2000);
+      try {
+        // API에 POST 요청 보내기
+        const response = await fetch(
+          "http://localhost:8000/api/user/quiz-result",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              content: "금리가 오르면 부동산 가격이 대체로 내려갑니다.",
+              answer_id: 2,
+            }),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("API 요청에 실패했습니다.");
+        }
+
+        const data = await response.json();
+        console.log("API 응답:", data);
+
+        setSimilarity(data.similarity);
+
+        setTimeout(() => {
+          navigate("/explanation", { state: { similarity: data.similarity } });
+        }, 2000);
+      } catch (error) {
+        console.error("오류:", error);
+        alert("해설을 가져오는 중 오류가 발생했습니다.");
+      } finally {
+        setShowSplash(false);
+      }
     } else {
       alert(`"${question}"에 대한 더 많은 정보를 제공합니다.`);
     }
   };
 
-  // 스플래시 화면이 보이는 동안에는 스플래시 컴포넌트만 렌더링
   if (showSplash) {
     return <Splash />;
   }
@@ -113,7 +143,11 @@ const QuizResult = () => {
       <ResultText>
         축하해요
         <br />
-        정답률 <HighlightedText>78%</HighlightedText>로 거의 맞췄어요!
+        정답률{" "}
+        <HighlightedText>
+          {similarity !== null ? `${similarity}%` : "78%"}
+        </HighlightedText>
+        로 거의 맞췄어요!
       </ResultText>
       <Image src={partyPopperImage} alt="Party Popper" />
       <ButtonList>

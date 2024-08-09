@@ -33,7 +33,7 @@ const BackButton = styled.div`
 const Title = styled.h1`
   font-size: 24px;
   color: #333;
-  margin: 10px 0 20px 0; /* 상단 여백을 줄이기 위해 margin-top을 10px로 설정 */
+  margin: 10px 0 20px 0;
 `;
 
 const Section = styled.div`
