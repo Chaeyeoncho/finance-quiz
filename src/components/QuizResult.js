@@ -45,7 +45,38 @@ const HighlightedText = styled.span`
 const Image = styled.img`
   width: 100px;
   height: 100px;
-  margin-bottom: auto; /* 이미지를 맨 아래로 내리기 */
+  margin-bottom: 20px; /* 이미지를 버튼들 위로 올리기 위해 조정 */
+`;
+
+const ButtonList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* 항목들 사이의 간격 */
+  width: 100%;
+  margin-top: auto; /* 버튼 리스트를 컨테이너 하단으로 이동 */
+`;
+
+const Button = styled.div`
+  background-color: #f0f0f0;
+  color: #333;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: background-color 0.3s, color 0.3s;
+  &:hover {
+    background-color: #fdba12;
+    color: white;
+  }
+`;
+
+const LastButton = styled(Button)`
+  background-color: #fdba12;
+  color: white;
+  &:hover {
+    background-color: #f0f0f0;
+    color: #333;
+  }
 `;
 
 const QuizResult = () => {
@@ -53,6 +84,10 @@ const QuizResult = () => {
 
   const handleBackToQuiz = () => {
     navigate("/");
+  };
+
+  const handleQuestionClick = (question) => {
+    alert(`"${question}"에 대한 더 많은 정보를 제공합니다.`);
   };
 
   return (
@@ -66,6 +101,17 @@ const QuizResult = () => {
         정답률 <HighlightedText>78%</HighlightedText>로 거의 맞췄어요!
       </ResultText>
       <Image src={partyPopperImage} alt="Party Popper" />
+      <ButtonList>
+        <Button onClick={() => handleQuestionClick("중앙은행이란?")}>
+          중앙은행이란?
+        </Button>
+        <Button onClick={() => handleQuestionClick("통화정책이란?")}>
+          통화정책이란?
+        </Button>
+        <LastButton onClick={() => handleQuestionClick("질문에 대한 해설")}>
+          질문에 대한 해설 더 알아보러 가기
+        </LastButton>
+      </ButtonList>
     </Container>
   );
 };

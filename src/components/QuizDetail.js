@@ -122,16 +122,15 @@ const QuizDetail = () => {
         <BackButton onClick={() => navigate(-1)}> ← </BackButton>
         <Header>{formatTime(timeLeft)} 남음</Header>
         <Question>
-          위험을 분산시키기 위해 다양한 종류의 주식이나 채권 등을 한데 묶어 놓은
-          투자상품을 무엇이라고 하나요?
+          중앙은행의 통화정책이 경제에 미치는 영향을 설명하세요
         </Question>
         <AnswerInput
           type="text"
           placeholder="빈칸에 정답을 입력해주세요"
-          maxLength={2}
+          maxLength={100}
           onChange={handleInputChange}
         />
-        <CharCount>{charCount}/2자</CharCount>
+        <CharCount>{charCount}/100자</CharCount>
       </div>
       <Buttons>
         <Button className="hint-button">힌트 보기</Button>
