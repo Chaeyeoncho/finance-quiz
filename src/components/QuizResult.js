@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import partyPopperImage from "../assets/img/party_popper.jpg"; // 이미지를 가져옵니다
+import partyPopperImage from "../assets/img/party_popper.jpg";
+import Splash from "./Splash"; // 스플래시 컴포넌트 import
 
 const Container = styled.div`
   width: 360px;
@@ -12,8 +13,8 @@ const Container = styled.div`
   padding: 20px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* 수직 상단 정렬 */
-  align-items: center; /* 수평 가운데 정렬 */
+  justify-content: flex-start;
+  align-items: center;
   text-align: center;
 `;
 
@@ -45,15 +46,15 @@ const HighlightedText = styled.span`
 const Image = styled.img`
   width: 100px;
   height: 100px;
-  margin-bottom: 20px; /* 이미지를 버튼들 위로 올리기 위해 조정 */
+  margin-bottom: 20px;
 `;
 
 const ButtonList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 10px; /* 항목들 사이의 간격 */
+  gap: 10px;
   width: 100%;
-  margin-top: auto; /* 버튼 리스트를 컨테이너 하단으로 이동 */
+  margin-top: auto;
 `;
 
 const Button = styled.div`
@@ -81,6 +82,7 @@ const LastButton = styled(Button)`
 
 const QuizResult = () => {
   const navigate = useNavigate();
+  const [showSplash, setShowSplash] = useState(false);
 
   const handleBackToQuiz = () => {
     navigate("/");
@@ -88,11 +90,20 @@ const QuizResult = () => {
 
   const handleQuestionClick = (question) => {
     if (question === "질문에 대한 해설") {
-      navigate("/explanation"); // '질문에 대한 해설' 버튼을 클릭하면 ExplanationPage로 이동
+      // 스플래시 화면을 보여주고 2초 후에 해설 페이지로 이동
+      setShowSplash(true);
+      setTimeout(() => {
+        navigate("/explanation");
+      }, 2000);
     } else {
       alert(`"${question}"에 대한 더 많은 정보를 제공합니다.`);
     }
   };
+
+  // 스플래시 화면이 보이는 동안에는 스플래시 컴포넌트만 렌더링
+  if (showSplash) {
+    return <Splash />;
+  }
 
   return (
     <Container>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useLocation, useNavigate } from "react-router-dom";
+import Splash from "./Splash"; // Splash 컴포넌트를 import
 
 const Container = styled.div`
   width: 100%;
@@ -108,6 +109,7 @@ const QuizDetail = () => {
   const [charCount, setCharCount] = useState(0);
   const [timeLeft, setTimeLeft] = useState(600); // 10분을 초로 환산
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showSplash, setShowSplash] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { keyword } = location.state || {};
@@ -131,7 +133,13 @@ const QuizDetail = () => {
   };
 
   const handleCheckAnswer = () => {
-    navigate("/result");
+    // 정답 확인 버튼을 눌렀을 때 스플래시 화면 표시
+    setShowSplash(true);
+
+    // 2초 후에 결과 페이지로 이동
+    setTimeout(() => {
+      navigate("/result");
+    }, 2000);
   };
 
   const handleHintClick = () => {
@@ -142,6 +150,12 @@ const QuizDetail = () => {
     setIsModalOpen(false);
   };
 
+  // Splash 화면이 보이는 동안에는 Splash 컴포넌트만 렌더링
+  if (showSplash) {
+    return <Splash />;
+  }
+
+  // Splash 화면이 사라지면 QuizDetail 컴포넌트를 렌더링
   return (
     <Container>
       <div>

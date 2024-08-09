@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Quiz.css";
+import Splash from "./Splash"; // Splash 컴포넌트를 import
 
 const keywords = [
   "예산 관리",
@@ -29,6 +30,12 @@ const keywords = [
 const Quiz = () => {
   const navigate = useNavigate();
   const [selectedKeywords, setSelectedKeywords] = useState([]);
+  const [showSplash, setShowSplash] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowSplash(false), 3000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleKeywordClick = (keyword) => {
     setSelectedKeywords((prevSelectedKeywords) =>
@@ -45,6 +52,10 @@ const Quiz = () => {
       alert("키워드를 선택해주세요.");
     }
   };
+
+  if (showSplash) {
+    return <Splash />;
+  }
 
   return (
     <div className="quiz-container">
