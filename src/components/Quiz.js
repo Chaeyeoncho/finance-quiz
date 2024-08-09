@@ -56,7 +56,7 @@ const Quiz = () => {
         });
 
         if (!response.ok) {
-          throw new Error("질문 생성에 실패했습니다.");
+          throw new Error("질문 생성 실패");
         }
 
         const result = await response.json();
@@ -65,12 +65,12 @@ const Quiz = () => {
         navigate("/detail", { state: { keywords: selectedKeywords } });
       } catch (error) {
         console.error("API 요청 중 오류 발생:", error);
-        alert("퀴즈 생성 중 오류가 발생했습니다. 다시 시도해주세요.");
+        alert("퀴즈 생성 중 오류가 발생했습니다");
       } finally {
         setShowSplash(false);
       }
     } else {
-      alert("키워드를 선택해주세요.");
+      alert("키워드를 선택해주세요");
     }
   };
 
