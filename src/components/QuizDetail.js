@@ -12,7 +12,7 @@ const Container = styled.div`
   padding: 20px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* 요소들을 세로 방향으로 분배 */
+  justify-content: space-between;
 `;
 
 const Header = styled.div`
@@ -32,11 +32,6 @@ const Question = styled.div`
   font-size: 18px;
   color: #333;
   margin-bottom: 20px;
-`;
-
-const Blanks = styled.span`
-  padding: 5px 10px;
-  border-radius: 5px;
 `;
 
 const AnswerInput = styled.input`
@@ -64,7 +59,7 @@ const CharCount = styled.div`
 const Buttons = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-top: auto; /* 버튼들을 맨 밑으로 내리기 */
+  margin-top: auto;
 `;
 
 const Button = styled.button`
@@ -87,9 +82,32 @@ const Button = styled.button`
   }
 `;
 
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+const ModalContent = styled.div`
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 300px;
+  text-align: center;
+`;
+
 const QuizDetail = () => {
   const [charCount, setCharCount] = useState(0);
   const [timeLeft, setTimeLeft] = useState(600); // 10분을 초로 환산
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { keyword } = location.state || {};
@@ -116,6 +134,14 @@ const QuizDetail = () => {
     navigate("/result");
   };
 
+  const handleHintClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <Container>
       <div>
@@ -133,11 +159,22 @@ const QuizDetail = () => {
         <CharCount>{charCount}/100자</CharCount>
       </div>
       <Buttons>
-        <Button className="hint-button">힌트 보기</Button>
+        <Button className="hint-button" onClick={handleHintClick}>
+          힌트 보기
+        </Button>
         <Button className="submit-button" onClick={handleCheckAnswer}>
           정답 확인
         </Button>
       </Buttons>
+
+      {isModalOpen && (
+        <ModalOverlay onClick={closeModal}>
+          <ModalContent>
+            <p> 중앙은행은 금리를 통해 경제를 조절합니다.</p>
+            <Button onClick={closeModal}>닫기</Button>
+          </ModalContent>
+        </ModalOverlay>
+      )}
     </Container>
   );
 };

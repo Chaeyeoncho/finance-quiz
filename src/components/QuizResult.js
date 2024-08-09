@@ -87,7 +87,11 @@ const QuizResult = () => {
   };
 
   const handleQuestionClick = (question) => {
-    alert(`"${question}"에 대한 더 많은 정보를 제공합니다.`);
+    if (question === "질문에 대한 해설") {
+      navigate("/explanation"); // '질문에 대한 해설' 버튼을 클릭하면 ExplanationPage로 이동
+    } else {
+      alert(`"${question}"에 대한 더 많은 정보를 제공합니다.`);
+    }
   };
 
   return (
