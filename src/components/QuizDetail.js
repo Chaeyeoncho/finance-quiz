@@ -110,6 +110,7 @@ const QuizDetail = () => {
   const [timeLeft, setTimeLeft] = useState(600);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showSplash, setShowSplash] = useState(false);
+  const [userAnswer, setUserAnswer] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
   const { keyword } = location.state || {};
@@ -125,6 +126,7 @@ const QuizDetail = () => {
 
   const handleInputChange = (e) => {
     setCharCount(e.target.value.length);
+    setUserAnswer(e.target.value);  // 사용자의 입력을 상태에 저장
   };
 
   const formatTime = (seconds) => {
@@ -133,13 +135,37 @@ const QuizDetail = () => {
     return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
   };
 
-  const handleCheckAnswer = () => {
+  const handleCheckAnswer = async () => {
     setShowSplash(true);
+    try {
+      // API에 POST 요청 보내기
+      const response = await fetch(
+        "http://localhost:8000/api/user/quiz-result",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            content: userAnswer,
+            answer_id: question.answer_id,
+          }),
+        }
+      );
 
-    setTimeout(() => {
-      navigate("/result");
-    }, 2000);
+      if (!response.ok) {
+        throw new Error("API 요청에 실패했습니다.");
+      }
+
+      const res = await response.json();
+      console.log("API 응답:", res);
+      navigate("/result",{ state: { quiz_result : res } });
+  } catch (error) {
+    console.error("오류:", error);
+  } finally {
+    setShowSplash(false);
   };
+}
 
   const handleHintClick = () => {
     setIsModalOpen(true);
@@ -180,5 +206,6 @@ const QuizDetail = () => {
     </Container>
   );
 };
+
 
 export default QuizDetail;

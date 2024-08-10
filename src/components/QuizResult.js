@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, StrictMode } from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import partyPopperImage from "../assets/img/party_popper.jpg";
 import Splash from "./Splash";
 
@@ -82,12 +82,25 @@ const LastButton = styled(Button)`
 
 const QuizResult = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [showSplash, setShowSplash] = useState(false);
-  const [similarity, setSimilarity] = useState(null);
+  const quiz_result = location.state || {};
 
   const handleBackToQuiz = () => {
     navigate("/");
   };
+
+  const similarity = quiz_result.quiz_result.similarity
+  let headerMessage = "축하해요";
+  let resultMessage = "로 거의 맞췄어요!";
+
+  if (similarity < 50) {
+    headerMessage = "이 문제는";
+    resultMessage = "로 학습이 더 필요해요.";
+  } else if (similarity < 75) {
+    headerMessage = "아쉬워요";
+    resultMessage = "로 정답과 유사해요.";
+  }
 
   const handleQuestionClick = async (question) => {
     if (question === "질문에 대한 해설") {
@@ -95,7 +108,7 @@ const QuizResult = () => {
       try {
         // API에 POST 요청 보내기
         const response = await fetch(
-          "http://localhost:8000/api/user/quiz-result",
+          "http://localhost:8000/api/user/",
           {
             method: "POST",
             headers: {
@@ -115,8 +128,6 @@ const QuizResult = () => {
         const data = await response.json();
         console.log("API 응답:", data);
 
-        setSimilarity(data.similarity);
-
         setTimeout(() => {
           navigate("/explanation", { state: { similarity: data.similarity } });
         }, 2000);
@@ -134,21 +145,21 @@ const QuizResult = () => {
   if (showSplash) {
     return <Splash />;
   }
-
   return (
     <Container>
       <Header>
         <BackButton onClick={handleBackToQuiz}>←</BackButton>
       </Header>
+      
       <ResultText>
-        축하해요
-        <br />
-        정답률{" "}
-        <HighlightedText>
-          {similarity !== null ? `${similarity}%` : "78%"}
-        </HighlightedText>
-        로 거의 맞췄어요!
-      </ResultText>
+      {headerMessage}
+      <br />
+      정답률{" "}
+      <HighlightedText>
+        {similarity + "%"|| "알 수 없음 %"}
+      </HighlightedText>
+      {resultMessage}
+    </ResultText>
       <Image src={partyPopperImage} alt="Party Popper" />
       <ButtonList>
         <Button onClick={() => handleQuestionClick("중앙은행이란?")}>
