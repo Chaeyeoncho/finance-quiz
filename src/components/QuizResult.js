@@ -84,14 +84,19 @@ const QuizResult = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [showSplash, setShowSplash] = useState(false);
-  const quiz_result = location.state.quiz_result || {};
-  const keyword_list = location.state.keyword_list || {};
+  const quiz_result = location.state?.quiz_result || JSON.parse(localStorage.getItem('quiz_result'));
+  const keyword_list = location.state?.keyword_list || JSON.parse(localStorage.getItem('keyword_list'));
+
+  localStorage.setItem('quiz_result', JSON.stringify(quiz_result));
+  localStorage.setItem('keyword_list', JSON.stringify(keyword_list));
 
   const handleBackToQuiz = () => {
     navigate("/");
   };
 
   console.log(keyword_list)
+
+  
 
   const similarity = quiz_result.similarity
   let headerMessage = "축하해요";
@@ -105,11 +110,47 @@ const QuizResult = () => {
     resultMessage = "로 정답과 유사해요.";
   }
 
+  const handleQuestionClick = async (question) => {
+    if (question === "질문에 대한 해설") {
+      setShowSplash(true);
+      try {
+        const response = await fetch(
+          "http://localhost:8000/api/user/quiz-answer-detail",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              content: quiz_result.answer
+            }),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("API 요청에 실패했습니다.");
+        }
+
+        const data = await response.json();
+        console.log("API 응답:", data);
+        navigate("/explanation", { state: { detail: data } });
+        
+      } catch (error) {
+        console.error("오류:", error);
+        alert("해설을 가져오는 중 오류가 발생했습니다.");
+      } finally {
+        setShowSplash(false);
+      }
+    } else {
+      alert(`"${question}"에 대한 더 많은 정보를 제공합니다.`);
+    }
+  };
   
 
   if (showSplash) {
     return <Splash />;
   }
+
   return (
     <Container>
       <Header>
