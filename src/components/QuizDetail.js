@@ -113,6 +113,7 @@ const QuizDetail = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { keyword } = location.state || {};
+  const { question } = location.state || {};
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -158,7 +159,7 @@ const QuizDetail = () => {
         <BackButton onClick={() => navigate(-1)}> ← </BackButton>
         <Header>{formatTime(timeLeft)} 남음</Header>
         <Question>
-          중앙은행의 통화정책이 경제에 미치는 영향을 설명하세요
+          {question.question_content || "질문을 불러오지 못했습니다."}
         </Question>
         <AnswerInput
           type="text"
@@ -176,15 +177,6 @@ const QuizDetail = () => {
           정답 확인
         </Button>
       </Buttons>
-
-      {isModalOpen && (
-        <ModalOverlay onClick={closeModal}>
-          <ModalContent>
-            <p> 중앙은행은 금리를 통해 경제를 조절합니다.</p>
-            <Button onClick={closeModal}>닫기</Button>
-          </ModalContent>
-        </ModalOverlay>
-      )}
     </Container>
   );
 };
