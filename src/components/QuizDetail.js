@@ -113,8 +113,10 @@ const QuizDetail = () => {
   const [userAnswer, setUserAnswer] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
-  const { keyword } = location.state || {};
-  const { question } = location.state || {};
+  const keyword_list = location.state.keyword_list || {};
+  const question = location.state.question || {};
+  
+  console.log(keyword_list)
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -159,7 +161,7 @@ const QuizDetail = () => {
 
       const res = await response.json();
       console.log("API 응답:", res);
-      navigate("/result",{ state: { quiz_result : res } });
+      navigate("/result",{ state: { quiz_result : res, keyword_list: keyword_list} });
   } catch (error) {
     console.error("오류:", error);
   } finally {
