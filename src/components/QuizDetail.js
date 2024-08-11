@@ -110,9 +110,13 @@ const QuizDetail = () => {
   const [timeLeft, setTimeLeft] = useState(600);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showSplash, setShowSplash] = useState(false);
+  const [userAnswer, setUserAnswer] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
-  const { keyword } = location.state || {};
+  const keyword_list = location.state.keyword_list || {};
+  const question = location.state.question || {};
+  
+  console.log(keyword_list)
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -124,6 +128,7 @@ const QuizDetail = () => {
 
   const handleInputChange = (e) => {
     setCharCount(e.target.value.length);
+    setUserAnswer(e.target.value);  // 사용자의 입력을 상태에 저장
   };
 
   const formatTime = (seconds) => {
@@ -132,13 +137,37 @@ const QuizDetail = () => {
     return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
   };
 
-  const handleCheckAnswer = () => {
+  const handleCheckAnswer = async () => {
     setShowSplash(true);
+    try {
+      // API에 POST 요청 보내기
+      const response = await fetch(
+        "http://localhost:8000/api/user/quiz-result",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            content: userAnswer,
+            answer_id: question.answer_id,
+          }),
+        }
+      );
 
-    setTimeout(() => {
-      navigate("/result");
-    }, 2000);
+      if (!response.ok) {
+        throw new Error("API 요청에 실패했습니다.");
+      }
+
+      const res = await response.json();
+      console.log("API 응답:", res);
+      navigate("/result",{ state: { quiz_result : res, keyword_list: keyword_list} });
+  } catch (error) {
+    console.error("오류:", error);
+  } finally {
+    setShowSplash(false);
   };
+}
 
   const handleHintClick = () => {
     setIsModalOpen(true);
@@ -158,7 +187,7 @@ const QuizDetail = () => {
         <BackButton onClick={() => navigate(-1)}> ← </BackButton>
         <Header>{formatTime(timeLeft)} 남음</Header>
         <Question>
-          중앙은행의 통화정책이 경제에 미치는 영향을 설명하세요
+          {question.question_content || "질문을 불러오지 못했습니다."}
         </Question>
         <AnswerInput
           type="text"
@@ -176,17 +205,9 @@ const QuizDetail = () => {
           정답 확인
         </Button>
       </Buttons>
-
-      {isModalOpen && (
-        <ModalOverlay onClick={closeModal}>
-          <ModalContent>
-            <p> 중앙은행은 금리를 통해 경제를 조절합니다.</p>
-            <Button onClick={closeModal}>닫기</Button>
-          </ModalContent>
-        </ModalOverlay>
-      )}
     </Container>
   );
 };
+
 
 export default QuizDetail;

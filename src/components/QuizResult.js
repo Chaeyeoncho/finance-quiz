@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, StrictMode } from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import partyPopperImage from "../assets/img/party_popper.jpg";
 import Splash from "./Splash";
 
@@ -82,28 +82,47 @@ const LastButton = styled(Button)`
 
 const QuizResult = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [showSplash, setShowSplash] = useState(false);
-  const [similarity, setSimilarity] = useState(null);
+  const quiz_result = location.state?.quiz_result || JSON.parse(localStorage.getItem('quiz_result'));
+  const keyword_list = location.state?.keyword_list || JSON.parse(localStorage.getItem('keyword_list'));
+
+  localStorage.setItem('quiz_result', JSON.stringify(quiz_result));
+  localStorage.setItem('keyword_list', JSON.stringify(keyword_list));
 
   const handleBackToQuiz = () => {
     navigate("/");
   };
 
+  console.log(keyword_list)
+
+  
+
+  const similarity = quiz_result.similarity
+  let headerMessage = "축하해요";
+  let resultMessage = "로 거의 맞췄어요!";
+
+  if (similarity < 50) {
+    headerMessage = "이 문제는";
+    resultMessage = "로 학습이 더 필요해요.";
+  } else if (similarity < 75) {
+    headerMessage = "괜찮은 답이에요";
+    resultMessage = "로 정답과 유사해요.";
+  }
+
   const handleQuestionClick = async (question) => {
     if (question === "질문에 대한 해설") {
       setShowSplash(true);
       try {
-        // API에 POST 요청 보내기
         const response = await fetch(
-          "http://localhost:8000/api/user/quiz-result",
+          "http://localhost:8000/api/user/quiz-answer-detail",
           {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              content: "금리가 오르면 부동산 가격이 대체로 내려갑니다.",
-              answer_id: 2,
+              content: quiz_result.answer
             }),
           }
         );
@@ -114,12 +133,8 @@ const QuizResult = () => {
 
         const data = await response.json();
         console.log("API 응답:", data);
-
-        setSimilarity(data.similarity);
-
-        setTimeout(() => {
-          navigate("/explanation", { state: { similarity: data.similarity } });
-        }, 2000);
+        navigate("/explanation", { state: { detail: data } });
+        
       } catch (error) {
         console.error("오류:", error);
         alert("해설을 가져오는 중 오류가 발생했습니다.");
@@ -130,6 +145,7 @@ const QuizResult = () => {
       alert(`"${question}"에 대한 더 많은 정보를 제공합니다.`);
     }
   };
+  
 
   if (showSplash) {
     return <Splash />;
@@ -140,23 +156,31 @@ const QuizResult = () => {
       <Header>
         <BackButton onClick={handleBackToQuiz}>←</BackButton>
       </Header>
+      
       <ResultText>
-        축하해요
-        <br />
-        정답률{" "}
-        <HighlightedText>
-          {similarity !== null ? `${similarity}%` : "78%"}
-        </HighlightedText>
-        로 거의 맞췄어요!
-      </ResultText>
+      {headerMessage}
+      <br />
+      유사도{" "}
+      <HighlightedText>
+        {similarity + "%"|| "알 수 없음 %"}
+      </HighlightedText>
+      {resultMessage}
+    </ResultText>
       <Image src={partyPopperImage} alt="Party Popper" />
+      {"퀴즈 정답: " + quiz_result.answer}
       <ButtonList>
-        <Button onClick={() => handleQuestionClick("중앙은행이란?")}>
-          중앙은행이란?
-        </Button>
-        <Button onClick={() => handleQuestionClick("통화정책이란?")}>
-          통화정책이란?
-        </Button>
+        {keyword_list.length > 0 ? (
+          keyword_list.map((keyword, index) => {
+            const buttonText = `${keyword.trim()}(이) 뭔가요?`;
+            return (
+              <Button key={index} onClick={() => handleQuestionClick(buttonText)}>
+                {buttonText}
+              </Button>
+            );
+          })
+        ) : (
+          <p>키워드가 없습니다.</p>
+        )}
         <LastButton onClick={() => handleQuestionClick("질문에 대한 해설")}>
           질문에 대한 해설 더 알아보러 가기
         </LastButton>

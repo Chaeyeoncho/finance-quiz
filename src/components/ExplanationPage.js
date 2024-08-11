@@ -1,6 +1,7 @@
-import React from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import React, { useState, useEffect, StrictMode } from "react";
+import Splash from "./Splash";
 
 const Container = styled.div`
   width: 360px;
@@ -57,41 +58,39 @@ const Paragraph = styled.p`
 
 const ExplanationPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [showSplash, setShowSplash] = useState(false);
+  const detail = location.state.detail || {}
 
   const handleBackToQuiz = () => {
     navigate("/result");
   };
+
+  const parts = detail.content.split(/(<[^>]+>)/g);
+
+  if (showSplash) {
+    return <Splash />;
+  }
 
   return (
     <Container>
       <Header>
         <BackButton onClick={handleBackToQuiz}>←</BackButton>
       </Header>
-      <Title>금리 조정의 영향</Title>
-      <Section>
-        <SectionTitle>소비와 투자</SectionTitle>
-        <Paragraph>
-          금리가 낮아지면 대출이 더 저렴해지므로 가계와 기업이 돈을 빌려 소비와
-          투자를 늘리게 됩니다. 반대로 금리가 높아지면 대출 비용이 증가해 소비와
-          투자가 감소합니다.
-        </Paragraph>
-      </Section>
-      <Section>
-        <SectionTitle>주택 시장</SectionTitle>
-        <Paragraph>
-          낮은 금리는 주택담보대출 비용을 줄여 주택 구입 수요를 늘릴 수
-          있습니다. 반대로 금리가 오르면 주택 구입 비용이 증가해 수요가 줄어들
-          수 있습니다.
-        </Paragraph>
-      </Section>
-      <Section>
-        <SectionTitle>환율</SectionTitle>
-        <Paragraph>
-          금리 인하는 자국 통화 가치를 떨어뜨려 수출 경쟁력을 높일 수 있습니다.
-          반대로 금리 인상은 통화 가치를 상승시켜 수출에 불리하게 작용할 수
-          있습니다.
-        </Paragraph>
-      </Section>
+      <div>
+      {parts.map((part, index) => {
+        if (part.startsWith('<')) {
+          return (
+            <div key={index}>
+              <br />
+              <br />
+              {part}
+            </div>
+          );
+        }
+        return <span key={index}>{part}</span>;
+      })}
+    </div>
     </Container>
   );
 };

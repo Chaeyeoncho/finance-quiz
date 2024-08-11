@@ -61,8 +61,7 @@ const Quiz = () => {
 
         const result = await response.json();
         console.log("API 응답:", result);
-
-        navigate("/detail", { state: { keywords: selectedKeywords } });
+        navigate("/detail", { state: { keyword_list: selectedKeywords, question:result } });
       } catch (error) {
         console.error("API 요청 중 오류 발생:", error);
         alert("퀴즈 생성 중 오류가 발생했습니다");
